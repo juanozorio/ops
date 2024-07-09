@@ -1,0 +1,18 @@
+- defaultTab: nodes
+  description: ''
+  executionEnabled: true
+  group: Network
+  id: 69fd10a1-536c-4f61-aeea-9bd6569a1939
+  loglevel: INFO
+  name: Hostname
+  nodeFilterEditable: false
+  plugins:
+    ExecutionLifecycle: {}
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - exec: hostname
+    keepgoing: false
+    strategy: node-first
+  uuid: 69fd10a1-536c-4f61-aeea-9bd6569a1939
+
