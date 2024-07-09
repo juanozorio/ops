@@ -1,0 +1,73 @@
+- defaultTab: nodes
+  description: |+
+    Checa conectividade TCP entre o servidor RUNDECK e um ip/porta
+
+    ### INPUTS
+
+    - Target: IP ou FQDN do alvo
+    - Port: Porta TCP para checar conectividade
+    - Timeout: Tempo para aguardar resposta | **padrão = 5s**
+
+  executionEnabled: true
+  group: Diagnosticos
+  id: e8de2bfd-6511-460e-b884-66f5692f996e
+  loglevel: INFO
+  name: Check Connect
+  nodeFilterEditable: false
+  options:
+  - description: |-
+      Por exemplo, se você deseja testar a conexão entrew este servidor e o google.com, preencha este campo com:
+
+      `google.com`
+
+      Se quiser testar a conexão entre este servidor e um ip, preencha com o IP:
+
+      `192.169.0.1`
+    label: IP ou FQDN do alvo
+    name: TARGET
+    required: true
+  - description: |-
+      Exemplos:
+
+      **HTTP** -> `80`
+
+      **HTTPS** -> `443`
+
+      **SSH** -> `22`
+
+      **CUSTOM_PORT** -> `9090`
+    label: Porta TCP
+    name: PORT
+    required: true
+  - description: 'Por padrão, este valor é 5 segundos'
+    label: Tempo de espera
+    name: TIMEOUT
+    required: true
+    value: '5'
+  plugins:
+    ExecutionLifecycle: {}
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        ansible-become: 'true'
+        ansible-become-method: sudo
+        ansible-playbook-inline: |-
+          - name: Check Connection
+            hosts: 59013b1bde92
+            connection: local
+            gather_facts: false
+            tasks:
+            - name: Checking connection with ${option.TARGET} at the port ${option.PORT}
+              wait_for:
+                host: ${option.TARGET}
+                port: ${option.PORT}
+                state: started
+                delay: 0
+                timeout: ${option.TIMEOUT}
+      nodeStep: true
+      type: com.batix.rundeck.plugins.AnsiblePlaybookInlineWorkflowNodeStep
+    keepgoing: false
+    strategy: node-first
+  uuid: e8de2bfd-6511-460e-b884-66f5692f996e
+
